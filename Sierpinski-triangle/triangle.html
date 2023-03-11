@@ -1,0 +1,88 @@
+<html>
+<body>
+<h1 style="color: green;font-size: 75px">Sierpinski's carpet</h1>
+<label for="recursion">Level of Recursion</label>
+<select name="recursion" id="recursion">
+    <option value="1" selected>1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+</select>
+</body>
+<div id="canvas"></div>
+<script>
+(() => {
+const canvas = document.createElement("canvas")
+document.getElementById("canvas").append(canvas)
+const context = canvas.getContext("2d")
+const width = canvas.width = 420
+const height = canvas.height = 420
+context.translate(width/2,height/2)
+const startPoints = {
+       A: {x:0, y:-150},
+       B: {x:150, y:75},
+       C: {x:-150,y:75}
+}
+
+const Triangle = (A, B, C) => {
+
+      context.beginPath()
+      context.moveTo(A.x, A.y)
+      context.lineTo(B.x, B.y)
+      context.lineTo(C.x, C.y)
+      context.fillStyle = "yellow"
+      context.fill()
+      context.closePath()
+}
+
+const Sierpinski = (A, B, C, level = 0) => {
+
+  let point1 = {
+      x: (A.x+B.x)/2, y: (A.y+B.y)/2
+  }
+  let point2 = {
+      x: (B.x+C.x)/2, y: (B.y+C.y)/2
+  }
+  let point3 = {
+      x: (A.x+C.x)/2, y: (A.y+C.y)/2
+  }
+
+  if (level > 0) {
+      Sierpinski(A, point1, point3, level - 1)
+      Sierpinski(point1, B, point2, level - 1)
+      Sierpinski(point3, point2, C, level - 1)
+  } else {
+
+     Triangle(A, B, C)
+  }
+
+}
+   Sierpinski(startPoints.A, startPoints.B, startPoints.C, 1)
+
+    const input = document.getElementById('recursion')
+    input.onchange = () => {
+    context.clearRect(-width / 2, height / -2, width, height)
+
+    Sierpinski(
+      startPoints.A,
+      startPoints.B,
+      startPoints.C,
+      input.options[input.selectedIndex].value
+    )
+  }
+
+
+
+})()
+</script>
+<style>
+  body {
+  overflow-x: hidden;
+  text-align: center;
+}
+canvas {border: 1px solid #fff}
+</style>
+</html>
